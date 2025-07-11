@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chip7 ‒ Fatura Fácil</title>
+
+  <!-- favicon -->
+  <link rel="icon" href="../assets/favicon.ico" type="image/x-icon" />
+
+  <!-- Estilo específico para tela de login / seleção de contrato -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- ============================================================= -->
+  <!--   HEADER será carregado dinamicamente a partir de components/header.html   -->
+  <!-- ============================================================= -->
+  <div id="header-container"></div>
+
+  <main>
+    <!-- ======================================================== -->
+    <!--    TELA DE LOGIN: CPF/CNPJ + BOTÃO “Entrar”             -->
+    <!-- ======================================================== -->
+    <section id="login-screen" class="card">
+      <h2>Informe seu CPF ou CNPJ</h2>
+      <div class="login-underline"></div>
+
+      <!-- Campo de CPF/CNPJ -->
+      <input
+        type="text"
+        id="cpf-input"
+        placeholder="Informe seu CPF ou CNPJ"
+        inputmode="numeric"
+        maxlength="18"
+      />
+
+      <button id="btn-submit">Entrar</button>
+
+      <p id="loading" class="info-text">Carregando…</p>
+      <p id="error-msg" class="error-text"></p>
+    </section>
+
+    <!-- ======================================================== -->
+    <!--   CONTAINER ONDE O faturas.html SERÁ INJETADO (OCULTO)  -->
+    <!-- ======================================================== -->
+    <div id="faturas-component" style="display: none;"></div>
+  </main>
+
+  <!-- container do modal de viabilidade (mesmo do index raiz) -->
+  <div id="viabilidade-modal-root"></div>
+
+  <!-- ======================================================== -->
+  <!--   1) Carrega dinamicamente o HEADER                       -->
+  <!-- ======================================================== -->
+  <script type="module">
+    const headerContainer = document.getElementById("header-container");
+    fetch("../components/header.html")
+      .then(res => res.text())
+      .then(html => {
+        headerContainer.innerHTML = html;
+
+        // Toggle menu mobile do header
+        window.toggleMobileMenu = () => {
+          const menu = document.getElementById('chip7-mobile-menu');
+          if (menu) {
+            const isOpen = menu.style.display === 'flex';
+            menu.style.display = isOpen ? 'none' : 'flex';
+            if (!isOpen) menu.style.flexDirection = 'column';
+          }
+        };
+
+        const toggleBtn = document.querySelector('.chip7-mobile-toggle');
+        const closeBtn  = document.querySelector('.chip7-close-menu');
+        if (toggleBtn) toggleBtn.addEventListener('click', window.toggleMobileMenu);
+        if (closeBtn)  closeBtn.addEventListener('click', window.toggleMobileMenu);
+
+        // Botões “Verificar Viabilidade” (mobile / desktop)
+        const viabBtn        = document.querySelector('.open-viabilidade');
+        const viabDesktopBtn = document.querySelector('.chip7-right-area .chip7-btn-verificar:not(.full)');
+        if (viabBtn) {
+          viabBtn.addEventListener('click', () => {
+            const menu = document.getElementById('chip7-mobile-menu');
+            if (menu) menu.style.display = 'none';
+            import('../components/viabilidade.js').then(mod => mod.showViabilidadeModal());
+          });
+        }
+        if (viabDesktopBtn) {
+          viabDesktopBtn.addEventListener('click', () => {
+            import('../components/viabilidade.js').then(mod => mod.showViabilidadeModal());
+          });
+        }
+      })
+      .catch(error => {
+        headerContainer.innerHTML = "<p style='color:red;padding:10px;'>Erro ao carregar o header.</p>";
+        console.error("Erro ao carregar header.html:", error);
+      });
+  </script>
+
+  <!-- ======================================================== -->
+  <!--   2) Carrega a API e a lógica de faturas                  -->
+  <!--    – api.js: chamadas à API                              -->
+  <!--    – faturas.js: faz login, exibe seleção de contrato     -->
+  <!--      e injeta faturas.html quando o usuário autentica     -->
+  <!-- ======================================================== -->
+  <script type="module">
+    import { getContratos, getTitulos } from './api.js';
+    import './faturas.js';
+  </script>
+</body>
+</html>

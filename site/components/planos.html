@@ -1,0 +1,240 @@
+<style>
+  /* Container com borda única */
+  #planos-container {
+    background-color: #1d1d1b;
+    border: 2px solid #fbcc0a;
+    margin: 2rem auto;
+    max-width: 95vw;
+    border-radius: 16px;
+    padding: 2rem 1rem 1rem;
+    font-family: 'Roboto', sans-serif;
+  }
+
+  .planos-header {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  .planos-header h2 {
+    color: #fbcc0a;
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .planos-header p {
+    color: #ccc;
+    font-size: 1rem;
+  }
+
+  .planos-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+    justify-content: center;
+    padding-bottom: 2rem;
+  }
+
+  .plano-card {
+    flex: 1 1 280px;
+    max-width: 350px;
+    background-color: #ffffff;
+    border-radius: 20px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    scroll-snap-align: center;
+    transition: box-shadow 0.2s ease;
+    border: 3px solid transparent;
+  }
+
+  /* Cores específicas das bordas dos planos */
+  .plano-card.essencial { border-color: #999; }
+  .plano-card.super     { border-color: #fbcc0a; }
+  .plano-card.ultra     { border-color: #000; }
+
+  .plano-card:hover {
+    box-shadow: 0 14px 30px rgba(0,0,0,0.3);
+  }
+
+  .plano-top {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 1rem 0.5rem; /* Reduzido */
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .plano-top img {
+    max-height: 300px;
+    margin-bottom: 0.8rem;
+  }
+
+  .plano-velocidade {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #1d1d1b;
+    margin-bottom: 0.25rem;
+  }
+
+  .plano-preco {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #444444;
+    margin-bottom: 1rem;
+  }
+
+  .plano-desc {
+    padding: 0 1.5rem;
+    font-size: 0.95rem;
+    color: #555555;
+    text-align: center;
+    margin-bottom: 1rem;
+    min-height: 60px;
+  }
+
+  .plano-expandir {
+    border: none;
+    background: none;
+    font-size: 1.5rem;
+    color: #fbcc0a;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+  }
+
+  .plano-expandir:hover {
+    transform: scale(1.2);
+  }
+
+  .plano-detalhes {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease, padding 0.4s ease;
+    padding: 0 1.5rem;
+  }
+
+  .plano-detalhes.open {
+    max-height: 500px;
+    padding: 1rem 1.5rem 2rem;
+  }
+
+  .plano-detalhes ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-size: 0.95rem;
+    color: #333;
+  }
+
+  .plano-detalhes li {
+    padding: 0.4rem 0;
+    border-bottom: 1px solid #eee;
+  }
+
+  .plano-img-footer {
+    width: 100%;
+    aspect-ratio: 3/1;
+    object-fit: cover;
+    display: block;
+    margin-top: auto;
+  }
+
+  @media (max-width: 768px) {
+    .planos-grid {
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .plano-card {
+      flex: 1 1 90%;
+      max-width: 500px;
+    }
+  }
+</style>
+
+<section id="planos-container">
+  <div class="planos-header">
+    <h2>Nossos Planos</h2>
+    <p>Escolha a velocidade ideal para sua casa ou empresa</p>
+  </div>
+
+  <div class="planos-grid">
+
+    <!-- Plano Essencial -->
+    <div class="plano-card essencial">
+      <div class="plano-top">
+        <img src="assets/planos/essencial-logo.png" alt="Plano Essencial">
+        <div class="plano-velocidade">400Mb</div>
+        <div class="plano-preco">R$ 70/mês</div>
+      </div>
+      <p class="plano-desc">Perfeito para quem busca economia com qualidade.</p>
+      <button class="plano-expandir">&#9660;</button>
+      <div class="plano-detalhes">
+        <ul>
+          <li>400Mb de upload e download reais</li>
+          <li>Wi-Fi Mesh incluso</li>
+          <li>Ativação rápida</li>
+          <li>Suporte técnico incluso</li>
+        </ul>
+      </div>
+      <img class="plano-img-footer" src="assets/planos/img-essencial.jpg" alt="Imagem Plano Essencial" />
+    </div>
+
+    <!-- Plano Super -->
+    <div class="plano-card super">
+      <div class="plano-top">
+        <img src="assets/planos/super-logo.png" alt="Plano Super">
+        <div class="plano-velocidade">700Mb</div>
+        <div class="plano-preco">R$ 100/mês</div>
+      </div>
+      <p class="plano-desc">Ideal para famílias que estudam, trabalham e se divertem.</p>
+      <button class="plano-expandir">&#9660;</button>
+      <div class="plano-detalhes">
+        <ul>
+          <li>700Mb de velocidade simétrica</li>
+          <li>Wi-Fi de alto desempenho</li>
+          <li>Instalação gratuita</li>
+          <li>Monitoramento online</li>
+        </ul>
+      </div>
+      <img class="plano-img-footer" src="assets/planos/img-super.jpg" alt="Imagem Plano Super" />
+    </div>
+
+    <!-- Plano Ultra -->
+    <div class="plano-card ultra">
+      <div class="plano-top">
+        <img src="assets/planos/ultra-logo.png" alt="Plano Ultra">
+        <div class="plano-velocidade">1Gb</div>
+        <div class="plano-preco">R$ 150/mês</div>
+      </div>
+      <p class="plano-desc">A melhor conexão para gamers, streamers e empresas exigentes.</p>
+      <button class="plano-expandir">&#9660;</button>
+      <div class="plano-detalhes">
+        <ul>
+          <li>1Gb full-duplex</li>
+          <li>Equipamentos topo de linha</li>
+          <li>Suporte prioritário</li>
+          <li>Garantia de performance</li>
+        </ul>
+      </div>
+      <img class="plano-img-footer" src="assets/planos/img-ultra.jpg" alt="Imagem Plano Ultra" />
+    </div>
+
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll('.plano-expandir').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const detalhes = btn.nextElementSibling;
+      const aberto = detalhes.classList.contains('open');
+      document.querySelectorAll('.plano-detalhes').forEach(d => d.classList.remove('open'));
+      document.querySelectorAll('.plano-expandir').forEach(b => b.innerHTML = '▼');
+      if (!aberto) {
+        detalhes.classList.add('open');
+        btn.innerHTML = '▲';
+      }
+    });
+  });
+</script>

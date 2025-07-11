@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chip7</title>
+
+  <!-- Favicon -->
+  <link rel="icon" href="./assets/favicon.ico" type="image/x-icon" />
+
+  <!-- Estilo global -->
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #1d1d1b;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      overflow-x: hidden;
+    }
+
+    main {
+      padding: 2rem;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header será carregado dinamicamente -->
+  <div id="header-container"></div>
+
+  <!-- Banner será carregado dinamicamente -->
+  <div id="banner-container"></div>
+
+  <!-- ✅ Componente de Planos (ID corrigido) -->
+  <div id="planos-wrapper"></div>
+
+  <!-- Componente de Links (baixe nossos apps) -->
+  <div id="links-container"></div>
+
+  <!-- Componente de Cards de Produtos -->
+  <div id="cardprodutos-container"></div>
+
+  <!-- Conteúdo principal -->
+  <main>
+    <!-- Aqui você pode colocar o restante do conteúdo da página -->
+  </main>
+
+  <!-- 🔶 Container do modal de viabilidade -->
+  <div id="viabilidade-modal-root"></div>
+
+  <!-- 🔁 Script de carregamento dinâmico -->
+  <script type="module">
+    import { showViabilidadeModal } from './components/viabilidade.js';
+
+    // HEADER
+    const headerContainer = document.getElementById("header-container");
+    fetch("./components/header.html")
+      .then(res => res.text())
+      .then(html => {
+        headerContainer.innerHTML = html;
+
+        window.toggleMobileMenu = () => {
+          const menu = document.getElementById('chip7-mobile-menu');
+          if (menu) {
+            const isOpen = menu.style.display === 'flex';
+            menu.style.display = isOpen ? 'none' : 'flex';
+            if (!isOpen) menu.style.flexDirection = 'column';
+          }
+        };
+
+        const toggleBtn = document.querySelector('.chip7-mobile-toggle');
+        const closeBtn = document.querySelector('.chip7-close-menu');
+        if (toggleBtn) toggleBtn.addEventListener('click', window.toggleMobileMenu);
+        if (closeBtn) closeBtn.addEventListener('click', window.toggleMobileMenu);
+
+        const viabBtn = document.querySelector('.open-viabilidade');
+        if (viabBtn) {
+          viabBtn.addEventListener('click', () => {
+            const menu = document.getElementById('chip7-mobile-menu');
+            if (menu) menu.style.display = 'none';
+            showViabilidadeModal();
+          });
+        }
+
+        const viabDesktopBtn = document.querySelector('.chip7-right-area .chip7-btn-verificar:not(.full)');
+        if (viabDesktopBtn) {
+          viabDesktopBtn.addEventListener('click', () => {
+            showViabilidadeModal();
+          });
+        }
+      })
+      .catch(error => {
+        headerContainer.innerHTML = "<p style='color:red;padding:10px;'>Erro ao carregar o header.</p>";
+        console.error("Erro ao carregar header.html:", error);
+      });
+
+    // BANNER
+    const bannerContainer = document.getElementById("banner-container");
+    fetch("./components/banner.html")
+      .then(res => res.text())
+      .then(html => {
+        bannerContainer.innerHTML = html;
+        bannerContainer.querySelectorAll("script").forEach(oldScript => {
+          const newScript = document.createElement("script");
+          if (oldScript.src) newScript.src = oldScript.src;
+          else newScript.textContent = oldScript.textContent;
+          document.body.appendChild(newScript);
+        });
+      })
+      .catch(error => {
+        bannerContainer.innerHTML = "<p style='color:red;padding:10px;'>Erro ao carregar o banner.</p>";
+        console.error("Erro ao carregar banner.html:", error);
+      });
+
+    // PLANOS (corrigido para usar o ID planos-wrapper)
+    const planosContainer = document.getElementById("planos-wrapper");
+    fetch("./components/planos.html")
+      .then(res => res.text())
+      .then(html => {
+        planosContainer.innerHTML = html;
+        planosContainer.querySelectorAll("script").forEach(oldScript => {
+          const newScript = document.createElement("script");
+          if (oldScript.src) newScript.src = oldScript.src;
+          else newScript.textContent = oldScript.textContent;
+          document.body.appendChild(newScript);
+        });
+      })
+      .catch(error => {
+        planosContainer.innerHTML = "<p style='color:red;padding:10px;'>Erro ao carregar o componente de planos.</p>";
+        console.error("Erro ao carregar planos.html:", error);
+      });
+
+    // LINKS
+    const linksContainer = document.getElementById("links-container");
+    fetch("./components/links.html")
+      .then(res => res.text())
+      .then(html => {
+        linksContainer.innerHTML = html;
+        linksContainer.querySelectorAll("script").forEach(oldScript => {
+          const newScript = document.createElement("script");
+          if (oldScript.src) newScript.src = oldScript.src;
+          else newScript.textContent = oldScript.textContent;
+          document.body.appendChild(newScript);
+        });
+      })
+      .catch(error => {
+        linksContainer.innerHTML = "<p style='color:red;padding:10px;'>Erro ao carregar o componente de links.</p>";
+        console.error("Erro ao carregar links.html:", error);
+      });
+
+    // PRODUTOS
+    const cardsContainer = document.getElementById("cardprodutos-container");
+    fetch("./components/cardprodutos.html")
+      .then(res => res.text())
+      .then(html => {
+        cardsContainer.innerHTML = html;
+        cardsContainer.querySelectorAll("script").forEach(oldScript => {
+          const newScript = document.createElement("script");
+          if (oldScript.src) newScript.src = oldScript.src;
+          else newScript.textContent = oldScript.textContent;
+          document.body.appendChild(newScript);
+        });
+      })
+      .catch(error => {
+        cardsContainer.innerHTML = "<p style='color:red;padding:10px;'>Erro ao carregar os cards de produtos.</p>";
+        console.error("Erro ao carregar cardprodutos.html:", error);
+      });
+  </script>
+</body>
+</html>

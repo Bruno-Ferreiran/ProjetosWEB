@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Faturas – Chip7</title>
+
+  <!-- =======================================
+       1) Fontes e ícones (Font Awesome, opcional para botões)
+       ======================================= -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    integrity="sha512-p1CmjN+vTl0bJ1lHYmdOeH4eYwSzKnrLmT8vhmpGX4xfr6Q2ox3vsqlOBV2bFu04gqVQr3DvGztzY3k0YhngSw=="
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  />
+
+  <style>
+    /* ===========================================
+       ESTILOS INLINE PARA faturas.html – CHIP7 
+       (fundo de página preto, cards brancos, ajustes de espaçamento)
+       =========================================== */
+
+    /* 1) Fonte Roboto */
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+    /* 2) Reset mínimo e background geral escuro */
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #1d1d1b; /* Fundo preto */
+      font-family: 'Roboto', sans-serif;
+      color: #ffffff; /* Texto branco padrão */
+    }
+
+    /* 3) Container centralizado ocupando 90% da largura da tela */
+    .container {
+      width: 90%;
+      margin: 0 auto;
+      padding: 0 1rem; /* Espaço lateral */
+      box-sizing: border-box;
+      /* Empurra todo o conteúdo 64px para baixo (altura do header) */
+      padding-top: 64px;
+    }
+
+    /* ===========================================
+       ÁREA DE INFORMAÇÃO DO CLIENTE (baixo do header)
+       =========================================== */
+    #client-info {
+      margin: 0; /* Removido espaçamento superior */
+      padding: 1rem 0; /* Apenas um pouco de padding interno */
+      color: #ffffff;
+    }
+    #client-info .client-name {
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+    #client-info .client-address {
+      font-size: 1rem;
+      color: #bbbbbb;
+    }
+
+    /* ===========================================
+       CAROUSEL DE MESES – Wrapper e setas
+       =========================================== */
+    .carousel-wrapper {
+      position: relative;
+      margin: 0; /* Removido espaçamento superior */
+      padding-top: 0.5rem; /* Pequeno espaçamento para separar do client-info */
+    }
+
+    /* Botões de seta (aparecem apenas em desktop) */
+    .carousel-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background-color: rgba(0, 0, 0, 0.5);
+      border: none;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 10;
+      transition: background-color 0.2s ease;
+    }
+    .carousel-arrow:hover {
+      background-color: rgba(0, 0, 0, 0.7);
+    }
+    .carousel-arrow svg {
+      width: 20px;
+      height: 20px;
+      fill: #fbcc0a;
+    }
+    .carousel-arrow.left {
+      left: 10px;
+    }
+    .carousel-arrow.right {
+      right: 10px;
+    }
+
+    /* Esconde setas em telas pequenas (< 768px) */
+    @media (max-width: 767px) {
+      .carousel-arrow {
+        display: none;
+      }
+      #months-nav {
+        margin: 0; /* remove margem reservada para setas */
+      }
+    }
+
+    /* ===========================================
+       CARDS DE MÊS (month cards) – estilo geral
+       =========================================== */
+    #months-nav {
+      display: flex;
+      gap: 0.75rem;
+      overflow-x: auto; /* Scroll horizontal */
+      padding-bottom: 0.5rem;
+      scroll-behavior: smooth; /* Animação suave ao centralizar */
+      margin: 0 50px; /* Espaço para não ficar sob as setas */
+      /* Esconder scrollbar para Webkit (Chrome, Safari) */
+      -ms-overflow-style: none;  /* IE e Edge */
+      scrollbar-width: none;     /* Firefox */
+    }
+    #months-nav::-webkit-scrollbar {
+      display: none;
+    }
+
+    .month-tab {
+      flex: 0 0 auto;
+      width: 160px;                 /* Largura fixa para alinhar */
+      background-color: #ffffff;    /* Cartão branco */
+      border: 2px solid transparent;/* Borda padrão transparente */
+      border-radius: 8px;           /* Cantos arredondados */
+      padding: 0.6rem 0.5rem;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;       /* Título em cima, divider, status em baixo */
+      align-items: center;
+      text-align: center;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .month-tab:hover {
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+
+    /* Cartão “ativo” (mês selecionado) */
+    .month-tab.active {
+      border-color: #fbcc0a;       /* Borda amarela para destacar */
+      box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    }
+    .month-tab.active .month-title {
+      color: #1d1d1b;             /* Texto preto quando ativo */
+      font-weight: 700;
+    }
+    .month-tab.active .month-div {
+      background-color: #fbcc0a;  /* Divider amarelo quando ativo */
+      opacity: 1;
+    }
+
+    /* Título do mês (linha superior) */
+    .month-tab .month-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #1d1d1b;             /* Texto preto em cartão não selecionado */
+      margin-bottom: 0.3rem;
+      white-space: nowrap;
+    }
+
+    /* Divider amarelo logo abaixo do título, com 95% de largura do card */
+    .month-tab .month-div {
+      width: 95%;
+      height: 1px;                 /* Mais fina e delicada */
+      background-color: #fbcc0a;   /* Linha amarela Chip7 */
+      margin-bottom: 0.3rem;
+      border-radius: 1px;
+      opacity: 0.6;                /* Levemente opaco quando não ativo */
+      transition: opacity 0.2s ease;
+    }
+
+    /* Status do mês (linha inferior) */
+    .month-tab .month-status {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: #555555;             /* Texto cinza em não selecionado */
+    }
+    /* Ícone de status dentro do month-status */
+    .month-tab .month-status .icon svg {
+      width: 18px;
+      height: 18px;
+      fill: #fbcc0a;             /* Ícone amarelo */
+    }
+    /* Se for “Pago”, o texto fica verde escuro e ícone verde */
+    .month-status.status-pago {
+      color: #2e7d32;
+    }
+    .month-status.status-pago .icon svg {
+      fill: #2e7d32;
+    }
+    /* Se for “Em Aberto”, o texto e ícone ficam amarelos */
+    .month-status.status-aberto {
+      color: #fbcc0a;
+    }
+    .month-status.status-aberto .icon svg {
+      fill: #fbcc0a;
+    }
+    /* Se for “Atrasado”, o texto e ícone ficam vermelhos */
+    .month-status.status-atrasado {
+      color: #FF0000;
+    }
+    .month-status.status-atrasado .icon svg {
+      fill: #FF0000;
+    }
+
+    /* ===========================================
+       CONTAINER ESCURO DE FATURAS (abaixo dos month cards)
+       =========================================== */
+    #faturas-screen {
+      background-color: #ffffff;     /* Container branco */
+      border-radius: 8px;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+      padding: 2rem 1.5rem;
+      color: #1d1d1b;                /* Texto escuro */
+      margin-bottom: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      max-width: 900px;
+      margin: 2rem auto; /* centraliza o painel de faturas */
+    }
+
+    /* Heading “Fatura – Mês/Ano” dentro do painel branco */
+    #faturas-screen h2 {
+      text-align: center;
+      font-size: 1.8rem;
+      margin: 0;
+      padding-bottom: 0.5rem;
+      color: #1d1d1b;                /* Texto escuro */
+    }
+
+    /* Underline amarela abaixo do heading */
+    #faturas-screen .contract-underline {
+      width: 80%;
+      height: 2px;
+      background: #fbcc0a;           /* Amarelo Chip7 */
+      margin: 0.25rem auto 1.5rem auto;
+      border-radius: 1px;
+    }
+
+    .info-text {
+      color: #bbbbbb;
+      font-size: 0.95rem;
+      text-align: center;
+      display: none;
+    }
+    .error-text {
+      color: #FF0000;
+      font-size: 0.9rem;
+      text-align: center;
+      display: none;
+    }
+
+    /* ===========================================
+       RESULT CONTAINER: alinha os cards para ocupar toda a largura disponível
+       =========================================== */
+    #result-container {
+      margin-top: 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch; /* permite que cada card ocupe 100% do container */
+      gap: 1.5rem;
+      width: 100%;
+    }
+
+    /* ===========================================
+       CADA CARTÃO DE FATURA (dentro de #result-container)
+       =========================================== */
+    .fatura-card {
+      background-color: #ffffff;  /* Fundo branco */
+      color: #1d1d1b;             /* Texto escuro */
+      border: 1px solid #dddddd;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding: 1.5rem 2rem;
+      gap: 1rem;
+
+      /* Centraliza cada card se sobrar espaço lateral */
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* LADO ESQUERDO DO CARD: valor grande em coluna, depois vencimento e status */
+    .fatura-info {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      flex: 1; /* ocupa todo o espaço restante à esquerda */
+    }
+    .fatura-valor {
+      font-size: 2.5rem;       /* Valor bem grande */
+      font-weight: bold;
+      color: #1d1d1b;          /* Texto escuro */
+      line-height: 1;
+    }
+    .fatura-vencimento {
+      font-size: 1rem;
+      color: #555555;
+    }
+    .fatura-vencimento strong {
+      color: #1d1d1b;
+      margin-left: 0.25rem;
+    }
+    .fatura-status {
+      font-size: 1rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    /* cores e ícones dependendo do status */
+    .fatura-status.status-atrasado {
+      color: #FF0000;
+    }
+    .fatura-status.status-atrasado .icon svg {
+      fill: #FF0000;
+    }
+    .fatura-status.status-aberto {
+      color: #fbcc0a;
+    }
+    .fatura-status.status-aberto .icon svg {
+      fill: #fbcc0a;
+    }
+    .fatura-status.status-pago {
+      color: #2e7d32;
+    }
+    .fatura-status.status-pago .icon svg {
+      fill: #2e7d32;
+    }
+
+    /* Texto simples para “Fatura paga” */
+    .fatura-pago-text {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #2e7d32;
+      padding: 1.5rem 0;
+      text-align: center;
+    }
+
+    /* ===========================================
+       BOTÕES DE AÇÃO (PIX, Boleto, 2ª Via) – classe .acoes-fatura
+       =========================================== */
+    .acoes-fatura {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-left: 2rem; /* espaço à direita da coluna de infos */
+      flex-shrink: 0;    /* não encolhe caso a tela fique um pouco menor */
+    }
+
+    /* Container interno para alinhar os dois botões amarelos lado a lado */
+    .acoes-fatura .button-row {
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    /* Botões de copiar (chamadores de ação) */
+    .acoes-fatura button.btn-copiar-linha,
+    .acoes-fatura button.btn-copiar-pix {
+      background-color: #fbcc0a; /* amarelo Chip7 */
+      color: #1d1d1b;
+      padding: 0.6rem 1rem;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+      flex: 1; /* dividem igualmente o espaço */
+      justify-content: center;
+    }
+    .acoes-fatura button.btn-copiar-linha:hover,
+    .acoes-fatura button.btn-copiar-pix:hover {
+      background-color: #e0b209;
+    }
+
+    /* Ícones dentro dos botões de copiar */
+    .acoes-fatura button .fa-copy,
+    .acoes-fatura button .fa-qrcode {
+      font-size: 1rem;
+    }
+
+    /* Botão “Baixar 2ª Via” (cinza) — ocupa toda a largura */
+    .acoes-fatura a.btn-baixar {
+      background-color: #e0e0e0; /* cinza claro */
+      color: #1d1d1b;
+      padding: 0.75rem 1rem;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      text-decoration: none;
+      text-align: center;
+      font-weight: 500;
+      display: inline-block;
+      transition: background-color 0.2s ease;
+    }
+    .acoes-fatura a.btn-baixar:hover {
+      background-color: #c8c8c8;
+    }
+
+    /* Ícone dentro do botão “Baixar 2ª Via” */
+    .acoes-fatura a .fa-receipt {
+      font-size: 1rem;
+    }
+
+    /* =======================================
+       AJUSTES DE RESPONSIVIDADE
+       ======================================= */
+    @media (max-width: 767px) {
+      /* Esconde setas no mobile */
+      .carousel-arrow {
+        display: none;
+      }
+      #months-nav {
+        margin: 0; /* remove margem reservada para setas */
+      }
+      #months-nav {
+        gap: 0.5rem;
+      }
+      .month-tab {
+        width: 140px;
+        padding: 0.5rem 0.4rem;
+      }
+      #result-container {
+        gap: 1rem;
+      }
+      .fatura-card {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 1rem;
+        width: 100% !important; /* No mobile, ocupa 100% do container */
+      }
+      .fatura-info {
+        gap: 0.25rem;
+      }
+      .acoes-fatura {
+        margin-left: 0;
+      }
+      .acoes-fatura .button-row {
+        flex-direction: column;
+      }
+      .acoes-fatura button.btn-copiar-linha,
+      .acoes-fatura button.btn-copiar-pix,
+      .acoes-fatura a.btn-baixar {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <!-- =======================================
+         1) INFORMAÇÕES DO CLIENTE (Olá, Nome e Endereço)
+         ======================================= -->
+    <div id="client-info">
+      <!-- Será preenchido via JavaScript -->
+    </div>
+
+    <!-- =======================================
+         2) CAROUSEL DE MESES (várias abas visíveis de uma só vez)
+         ======================================= -->
+    <div class="carousel-wrapper">
+      <button class="carousel-arrow left" aria-label="Mês anterior">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+        </svg>
+      </button>
+
+      <div id="months-nav">
+        <!-- Cada .month-tab será gerado dinamicamente pelo script.js -->
+      </div>
+
+      <button class="carousel-arrow right" aria-label="Próximo mês">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- =======================================
+         3) CONTAINER “Suas Faturas” (abaixo dos month cards)
+         ======================================= -->
+    <div id="faturas-screen">
+      <h2>Fatura – <span id="fatura-mes-ano"></span></h2>
+      <div class="contract-underline"></div>
+
+      <p id="faturas-loading" class="info-text">Carregando faturas…</p>
+      <p id="faturas-error" class="error-text"></p>
+
+      <div id="result-container">
+        <!-- Cards de fatura serão gerados pelo script.js -->
+      </div>
+    </div>
+  </div>
+
+  <!-- IMPORTANTE: type="module" para que o import de script.js funcione -->
+  <script type="module" src="./script.js"></script>
+</body>
+</html>

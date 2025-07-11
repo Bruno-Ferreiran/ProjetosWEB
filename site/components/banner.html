@@ -1,0 +1,267 @@
+<!-- components/banner.html -->
+<!-- Fragmento autônomo contendo CSS, HTML e JS do carrossel -->
+
+<style>
+  /* ===================== Container Externo ===================== */
+  .banner-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 20px 0;            /* Espaço acima/abaixo do banner */
+    box-sizing: border-box;
+    background-color: #1d1d1b;  /* Fundo geral do wrapper */
+  }
+
+  /* ===================== Estilo do Banner ===================== */
+  .banner {
+    position: relative;
+    width: 95%;                   /* Ocupa 90% da largura da tela em desktop */
+    border-left: 8px solid #1d1d1b;   /* Borda preta grossa (desktop) */
+    border-right: 8px solid #1d1d1b;  /* Borda preta grossa (desktop) */
+    border-radius: 16px;              /* Cantos arredondados (desktop) */
+    overflow: hidden;                 /* Garante que a imagem não vaze pelos cantos */
+    background-color: #1d1d1b;        /* Cor de fundo ajustada */
+    box-sizing: border-box;
+    touch-action: pan-y;              /* Permite scroll vertical e swipe horizontal */
+  }
+
+  /* ===================== Estilo Geral das Imagens ===================== */
+  .banner img {
+    display: none;      /* Todas começam escondidas; o JS exibirá apenas a ativa */
+    width: 100%;
+    height: auto;
+    border-radius: 16px; /* Cantos arredondados no desktop */
+    user-select: none;   /* Impede seleção acidental */
+    -webkit-user-drag: none; /* Evita que a imagem seja arrastada */
+  }
+
+  /* ===== Oculta Desktop em Mobile ===== */
+  @media (max-width: 600px) {
+    .banner img.desktop {
+      display: none !important;
+    }
+    .banner img.mobile {
+      display: none; /* permanecem ocultas até o JS exibir apenas uma */
+    }
+  }
+
+  /* ===== Oculta Mobile em Desktop ===== */
+  @media (min-width: 601px) {
+    .banner img.mobile {
+      display: none !important;
+    }
+    .banner img.desktop {
+      display: none; /* permanecem ocultas até o JS exibir apenas uma */
+    }
+  }
+
+  /* ===================== Ajustes de Borda no Mobile ===================== */
+  @media (max-width: 600px) {
+    .banner {
+      width: 100%;                  /* Também ocupa 90% no mobile */
+      border-left: 1px solid #1d1d1b;   /* Borda preta fina no mobile */
+      border-right: 1px solid #1d1d1b;  /* Borda preta fina no mobile */
+      border-radius: 12px;           /* Cantos arredondados menores no mobile */
+    }
+    .banner img {
+      border-radius: 1px;           /* Cantos arredondados menores no mobile */
+    }
+  }
+
+  /* ===================== Pontinhos de Navegação ===================== */
+  .dots-container {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+    z-index: 20;
+  }
+  .dot {
+    width: 10px;
+    height: 10px;
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  .dot.active {
+    background-color: #fbcc0a;
+  }
+
+  /* ===================== Evita Seleção Durante Swipe ===================== */
+  .banner, .dots-container {
+    -webkit-user-select: none;
+       -ms-user-select: none;
+           user-select: none;
+  }
+</style>
+
+<div class="banner-wrapper">
+  <div class="banner">
+    <!-- ===== BANNERS PARA DISPOSITIVOS MENORES (mobile) ===== -->
+    <img
+      class="mobile"
+      src="/assets/banners/vision2x1.png"
+      alt="Banner Chip7 Vision (Mobile 1)"
+    />
+    <img
+      class="mobile"
+      src="/assets/banners/full2x1.png"
+      alt="Banner Plano Full (Mobile 2)"
+    />
+    <img
+      class="mobile"
+      src="/assets/banners/promo2x1.png"
+      alt="Banner Promoções (Mobile 3)"
+    />
+    <img
+      class="mobile"
+      src="/assets/banners/server2x1.png"
+      alt="Banner server (Mobile 3)"
+    />
+
+    <!-- ===== BANNERS PARA DISPOSITIVOS DESKTOP ===== -->
+    <img
+      class="desktop"
+      src="/assets/banners/vision3x1.jpg"
+      alt="Banner Chip7 Vision (Desktop 1)"
+    />
+    <img
+      class="desktop"
+      src="/assets/banners/1gb3x1.jpg"
+      alt="Banner promo (Desktop 2)"
+    />
+    <img
+      class="desktop"
+      src="/assets/banners/full3x1.jpg"
+      alt="Banner Plano Full (Desktop 3)"
+    />
+    <img
+      class="desktop"
+      src="/assets/banners/server3x1.jpg"
+      alt="Banner Servidor (Desktop 4)"
+    />
+
+    <!-- Pontinhos embaixo para navegação -->
+    <div class="dots-container"></div>
+  </div>
+</div>
+
+<script>
+  // Carrossel com pontinhos e swipe
+  (function() {
+    const banner = document.querySelector(".banner");
+    if (!banner) return;
+
+    const dotsContainer = banner.querySelector(".dots-container");
+    let slides = [];
+    let currentIndex = 0;
+    let intervalId;
+    let startX = 0;
+    let isDragging = false;
+
+    // Detecta se deve usar as imagens “mobile” ou “desktop”
+    function getSlides() {
+      const isMobile = window.innerWidth <= 600;
+      return Array.from(
+        banner.querySelectorAll(isMobile ? "img.mobile" : "img.desktop")
+      );
+    }
+
+    // Cria pontinhos de navegação conforme a quantidade de slides
+    function createDots(count) {
+      dotsContainer.innerHTML = "";
+      for (let i = 0; i < count; i++) {
+        const dot = document.createElement("div");
+        dot.classList.add("dot");
+        dot.addEventListener("click", () => {
+          showSlide(i);
+          resetInterval();
+        });
+        dotsContainer.appendChild(dot);
+      }
+      updateActiveDot();
+    }
+
+    // Atualiza qual dot está ativo
+    function updateActiveDot() {
+      const dots = Array.from(dotsContainer.children);
+      dots.forEach((dot, i) => {
+        dot.classList.toggle("active", i === currentIndex);
+      });
+    }
+
+    // Exibe o slide de índice “index” e esconde os demais
+    function showSlide(index) {
+      if (slides.length === 0) return;
+      slides.forEach((img, i) => {
+        img.style.display = i === index ? "block" : "none";
+      });
+      currentIndex = index;
+      updateActiveDot();
+    }
+
+    // Vai para o próximo slide
+    function nextSlide() {
+      if (slides.length === 0) return;
+      const nextIndex = (currentIndex + 1) % slides.length;
+      showSlide(nextIndex);
+    }
+
+    // Volta para o slide anterior
+    function prevSlide() {
+      if (slides.length === 0) return;
+      const prevIndex = (currentIndex - 1 + slides.length) % slides.length;
+      showSlide(prevIndex);
+    }
+
+    // Inicializa/reinicializa o carrossel
+    function startCarousel() {
+      slides = getSlides();
+      currentIndex = 0;
+      showSlide(0);
+      createDots(slides.length);
+      clearInterval(intervalId);
+      intervalId = setInterval(nextSlide, 6000); // troca a cada 6 segundos
+    }
+
+    // Reinicia o intervalo após interação manual
+    function resetInterval() {
+      clearInterval(intervalId);
+      intervalId = setInterval(nextSlide, 6000);
+    }
+
+    // Eventos de touch para swipe
+    banner.addEventListener("touchstart", (e) => {
+      isDragging = true;
+      startX = e.touches[0].clientX;
+    });
+
+    banner.addEventListener("touchmove", (e) => {
+      if (!isDragging) return;
+      const diffX = e.touches[0].clientX - startX;
+      // Se o movimento for suficientemente grande em qualquer direção, considera swipe
+      if (Math.abs(diffX) > 50) {
+        isDragging = false;
+        if (diffX > 0) {
+          prevSlide();
+        } else {
+          nextSlide();
+        }
+        resetInterval();
+      }
+    });
+
+    banner.addEventListener("touchend", () => {
+      isDragging = false;
+    });
+
+    // Quando a janela for redimensionada, reinicia o carrossel no conjunto correto de slides
+    window.addEventListener("resize", startCarousel);
+
+    // Finalmente, inicia o carrossel assim que o script for inserido
+    startCarousel();
+  })();
+</script>

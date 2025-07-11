@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vision Marina</title>
+  <link rel="icon" href="favicon.ico">
+  <style>
+    /* ============================ */
+    /*     Reset e fontes globais   */
+    /* ============================ */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+    body {
+      background-color: #2d2d2d;
+    }
+    /* ============================ */
+    /*       Tela de Login          */
+    /* ============================ */
+    .home-page-container {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 10px;
+    }
+    .home-outer-container {
+      background-color: #ffffff;
+      border-radius: 10px;
+      width: 100%;
+      max-width: 850px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+      overflow: hidden;
+    }
+    .home-header-container {
+      width: 100%;
+      background-color: #1d1d1b;
+      border-radius: 0 0 30px 30px;
+      padding: 50px;
+      text-align: center;
+      box-shadow: inset 0 -4px 8px rgba(0, 0, 0, 0.3);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .home-logo {
+      width: 100%;
+      max-width: 400px;
+      height: auto;
+      margin-bottom: 15px;
+    }
+    .home-divider {
+      width: 95%;
+      height: 3px;
+      background-color: #f8cb0e;
+      margin: 15px auto;
+    }
+    .home-title {
+      color: #fff;
+      font-size: 22px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+    .home-content-container {
+      background-color: #fff;
+      border-radius: 25px;
+      padding: 45px;
+      text-align: center;
+      width: 100%;
+      max-width: 700px;
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+      margin-top: 50px;
+      margin-bottom: 80px;
+    }
+    .home-input {
+      width: 100%;
+      max-width: 350px;
+      padding: 14px;
+      font-size: 18px;
+      border: 2px solid #ddd;
+      border-radius: 12px;
+      margin-bottom: 25px;
+    }
+    .home-input:focus {
+      border-color: #f8cb0e;
+      outline: none;
+    }
+    .home-button {
+      background-color: #f8cb0e;
+      color: #1d1d1b;
+      padding: 16px 32px;
+      border-radius: 12px;
+      font-size: 18px;
+      font-weight: bold;
+      text-align: center;
+      transition: transform 0.2s ease, box-shadow 0.3s ease-in-out;
+      width: 100%;
+      max-width: 350px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      border: none;
+      cursor: pointer;
+    }
+    .home-button:hover {
+      transform: scale(1.07);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+    }
+    @media (max-width: 768px) {
+      .home-header-container {
+        padding: 40px;
+        border-radius: 0 0 25px 25px;
+      }
+      .home-content-container {
+        padding: 30px;
+        max-width: 90%;
+        margin-top: 40px;
+        margin-bottom: 40px;
+      }
+      .home-logo {
+        max-width: 280px;
+      }
+      .home-title {
+        font-size: 20px;
+      }
+      .home-button {
+        font-size: 18px;
+        padding: 14px 28px;
+      }
+    }
+    /* ============================ */
+    /*       Painel de Câmeras      */
+    /* ============================ */
+    #cameraMosaic {
+      display: none;
+    }
+    .grid {
+      display: grid;
+      width: 100vw;
+      height: 100vh;
+      grid-template-columns: repeat(8, 1fr);
+      grid-template-rows: repeat(4, 1fr);
+      gap: 2px;
+    }
+    .grid-item {
+      position: relative;
+      background: #222;
+      cursor: pointer;
+    }
+    .grid-item iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+      pointer-events: none;
+      /* Lazy load no caso do navegador suportar */
+      loading: lazy;
+    }
+    .overlay {
+      position: absolute;
+      top: 5px;
+      left: 5px;
+      background: rgba(0, 0, 0, 0.6);
+      color: #fff;
+      padding: 2px 4px;
+      font-size: 14px;
+      z-index: 2;
+      border-radius: 3px;
+    }
+    @media (max-width: 768px) {
+      .grid {
+        grid-template-columns: repeat(4, 1fr);
+        grid-template-rows: repeat(8, 1fr);
+      }
+    }
+    /* ============================ */
+    /*         Modal Expandido      */
+    /* ============================ */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal.active {
+      display: flex;
+    }
+    .modal-content {
+      position: relative;
+      width: 90%;
+      height: 90%;
+      background: #000;
+    }
+    .modal-content iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      pointer-events: auto;
+    }
+    .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(255, 255, 255, 0.8);
+      color: #000;
+      border: none;
+      padding: 5px 10px;
+      cursor: pointer;
+      font-size: 16px;
+      z-index: 101;
+      border-radius: 3px;
+    }
+    .arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255, 255, 255, 0.8);
+      color: #000;
+      border: none;
+      padding: 10px;
+      cursor: pointer;
+      font-size: 24px;
+      z-index: 102;
+      border-radius: 50%;
+    }
+    .arrow.left {
+      left: 10px;
+    }
+    .arrow.right {
+      right: 10px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Tela de Login -->
+  <div class="home-page-container" id="loginScreen">
+    <div class="home-outer-container">
+      <header class="home-header-container">
+        <img src="logo1.png" alt="Logo" class="home-logo">
+        <div class="home-divider"></div>
+        <h1 class="home-title">Login</h1>
+      </header>
+      <div class="home-content-container">
+        <input type="password" id="passwordInput" placeholder="Digite sua senha" class="home-input">
+        <button id="loginBtn" class="home-button">Entrar</button>
+        <div id="loginError" style="color: red; margin-top: 10px; display: none;">Senha incorreta!</div>
+      </div>
+    </div>
+  </div>
+  <!-- Painel de Câmeras -->
+  <div id="cameraMosaic">
+    <div class="grid">
+      <!-- Itens do grid: cada grid-item tem data-src com a URL do stream.
+           O overlay exibe "CAM X". Se o feed não estiver disponível, placeholders serão usados. -->
+      <div class="grid-item" data-src="https://vision.chip7.cc/#/cembed/6504313d56d7bca6e0d9820093f86cb1844fbe88f21082f9cca916147ce9f74e80e2d9ad79c585badd2d3708ac36">
+        <div class="overlay">CAM 1</div>
+        <iframe loading="lazy"></iframe>
+      </div>
+      <div class="grid-item" data-src="https://vision.chip7.cc/#/cembed/233ba6905c8f19d2a60f7432df5c22eb05ce158b0bbc41484fef0929e164f3cf3671861f9b7620ed4351f6fbb59d">
+        <div class="overlay">CAM 2</div>
+        <iframe loading="lazy"></iframe>
+      </div>
+      <div class="grid-item" data-src="https://vision.chip7.cc/#/cembed/643b4acd647233ca3af7c12f2b221270c92048792e29faabe9ef53cc8ff480e0e9885d668397412251cbd2d79670">
+        <div class="overlay">CAM 3</div>
+        <iframe loading="lazy"></iframe>
+      </div>
+      <div class="grid-item" data-src="https://vision.chip7.cc/#/cembed/ae8b22b3d163a0cadc0aff199022117b280ab31e283cc42a684e39275b00dcab160377aea23214a5e73d74e9c97c">
+        <div class="overlay">CAM 4</div>
+        <iframe loading="lazy"></iframe>
+      </div>
+      <div class="grid-item" data-src="https://vision.chip7.cc/#/cembed/0365187776062249225e60c53d4146b21fb741bd6b1a04ac81177aefce50746ee5a724257221e526bb32f9826630">
+        <div class="overlay">CAM 5</div>
+        <iframe loading="lazy"></iframe>
+      </div>
+      <div class="grid-item" data-src="https://vision.chip7.cc/#/cembed/b79686faea66e62af340e10f18f0d41c85effb030fef59096a5f814e2112b79ff541f8011ea8cbc3ddcb2bb9c20c">
+        <div class="overlay">CAM 6</div>
+        <iframe loading="lazy"></iframe>
+      </div>
+      <div class="grid-item" data-src="https://vision.chip7.cc/#/cembed/ce6091992830a4f2b30ea0b1459d502f3844cd273856c8adfcf8f551e0cf178cc56c643e6063e3be463fe738eabf">
+        <div class="overlay">CAM 7</div>
+        <iframe loading="lazy"></iframe>
+      </div>
+      <div class="grid-item" data-src="https://vision.chip7.cc/#/cembed/a6dce8e7e5791fece5c3acadfc9290ad1e8dca6f7d8792d241a42ee081eed9d736730b15083b04be4c3d28ecbc20">
+        <div class="overlay">CAM 8</div>
+        <iframe loading="lazy"></iframe>
+      </div>
+      <div class="grid-item" data-src="https://vision.chip7.cc/#/cembed/e1a0c438ef427755c639c5c0bffd1235e7c04f7900fa38148571de0766dfc9d18308eb9d36dfb305ce1c5080ce51">
+        <div class="overlay">CAM 9</div>
+        <iframe loading="lazy"></iframe>
+      </div>
+      <div class="grid-item" data-src="https://vision.chip7.cc/#/cembed/108fe241c95dc544c1d3f087099c8705f4de2466c4d4e17c071817d486d1ce685d4f6c79e0edc091ddd8b871e0c3">
+        <div class="overlay">CAM 10</div>
+        <iframe loading="lazy"></iframe>
+      </div>
+      <div class="grid-item" data-src="https://vision.chip7.cc/#/cembed/c61d7135cfcadf1e7f6a6f463a266f21e51947fb7788ef29a738e579e0260b6a3e908234794017adc0effa6a10bf">
+        <div class="overlay">CAM 11</div>
+        <iframe loading="lazy"></iframe>
+      </div>
+      <div class="grid-item" data-src="https://vision.chip7.cc/#/cembed/fc20681bb5b08e70b8fc095dd1728172b611d9faba630beda2cf30bc8a553ebbe0ab7eef6ea630e36107c1df25e3">
+        <div class="overlay">CAM 12</div>
+        <iframe loading="lazy"></iframe>
+      </div>
+      <div class="grid-item" data-src="https://vision.chip7.cc/#/cembed/1ad6451ad764430677bfe1d17f0acbfa1cf9bd7ebe9b62db321308a8bd8e6adb4b6084832636240cd63bf4285bde">
+        <div class="overlay">CAM 13</div>
+        <iframe loading="lazy"></iframe>
+      </div>
+      <div class="grid-item" data-src="https://vision.chip7.cc/#/cembed/c3b58d0ae7b89a2e026c1426ee0fc9c90904308db53edbc321bb2158d0e6f6eadb5e7e8d2a6bc10bab5bd25d71c4">
+        <div class="overlay">CAM 14</div>
+        <iframe loading="lazy"></iframe>
+      </div>
+      <div class="grid-item" data-src="https://vision.chip7.cc/#/cembed/e6af37120d214d6ad97c38ebb709affe68edd25a9f5464a1790d54c9f62d709fd05760a3601ef56e2998184f43f1">
+        <div class="overlay">CAM 15</div>
+        <iframe loading="lazy"></iframe>
+      </div>
+      <div class="grid-item" data-src="https://vision.chip7.cc/#/cembed/d4cbfb23ce3f6ec190331e150c0efc80eb3585fe9145e8123feb2407a84c93d37a9e21a66d827debb81f16d39741">
+        <div class="overlay">CAM 16</div>
+        <iframe loading="lazy"></iframe>
+      </div>
+      <div class="grid-item" data-src="https://vision.chip7.cc/#/cembed/0e3b6ded3e044b278d80695ede2919a4bceb6148717dcf31cedf14fbd185e931c90d01aad857ab3de0c45507873a">
+        <div class="overlay">CAM 17</div>
+        <iframe loading="lazy"></iframe>
+      </div>
+      <div class="grid-item" data-src="https://vision.chip7.cc/#/cembed/b3dc8f48b0da62e9212350438735b0f05f5d96f6871f9989ef00da5073e8832a7effcbb619ca10adba6883efc91b">
+        <div class="overlay">CAM 18</div>
+        <iframe loading="lazy"></iframe>
+      </div>
+      <div class="grid-item" data-src="https://vision.chip7.cc/#/cembed/8b139edd4fad4b04f21eb75e3697ed413fdc1b2bd306a5417f808fc03c0b811fc3694f93a93d3a2f8ad41dcceb39">
+        <div class="overlay">CAM 19</div>
+        <iframe loading="lazy"></iframe>
+      </div>
+      <div class="grid-item" data-src="https://vision.chip7.cc/#/cembed/ab1be3f0f6d7c34843764e11e46ab8fe7a980f4972d6c4aeb730db37c30d9452525d617472c05c603fc2434f6ff4">
+        <div class="overlay">CAM 20</div>
+        <iframe loading="lazy"></iframe>
+      </div>
+      <div class="grid-item" data-src="https://vision.chip7.cc/#/cembed/6b11042e2ddddd4b99da707512e8e0f46fb9d1ba5d9b134677dfb285b54855fa95578c2807f85d7701e962f1b6fa">
+        <div class="overlay">CAM 21</div>
+        <iframe loading="lazy"></iframe>
+      </div>
+      <div class="grid-item" data-src="https://vision.chip7.cc/#/cembed/e58c14f5423d05cce911a07578e079f610680131cccca0453b0f818cd9174f54ae8c835bd84df3ea8c2c89af78b8">
+        <div class="overlay">CAM 22</div>
+        <iframe loading="lazy"></iframe>
+      </div>
+      <div class="grid-item" data-src="https://vision.chip7.cc/#/cembed/33a6736b940b5c82bed33e9984a67f939f8b6076f816cf250c5de09d9d64b564324cebafaddb12632b00beae648c">
+        <div class="overlay">CAM 23</div>
+        <iframe loading="lazy"></iframe>
+      </div>
+      <div class="grid-item" data-src="https://vision.chip7.cc/#/cembed/656804faa081f3b8bacf1e351f2427ed9c82d854b4cc530295dcdbf01dd78cd938d8e54525c19078a1aa2c0d8fc4">
+        <div class="overlay">CAM 24</div>
+        <iframe loading="lazy"></iframe>
+      </div>
+      <div class="grid-item" data-src="https://vision.chip7.cc/#/cembed/a3904482c85c35a522fa11bbad2dd501e1bbee9fa08379382971aa36d94212cbeb97ef51298fe84d990fc0a04a98">
+        <div class="overlay">CAM 25</div>
+        <iframe loading="lazy"></iframe>
+      </div>
+      <div class="grid-item" data-src="https://vision.chip7.cc/#/cembed/20a1cb4fa3e5ccdb7357a5ae141d3d31faa9e45de2202d938c9d4ee9166a373077ad0e98198343af54e5121eb424">
+        <div class="overlay">CAM 26</div>
+        <iframe loading="lazy"></iframe>
+      </div>
+      <div class="grid-item" data-src="https://vision.chip7.cc/#/cembed/e62da00edecbb4b9284ca562a2491fac258fd253810e8baf38902f531051f5ce5bdc7b5be42f0754e7c8bbbabd11">
+        <div class="overlay">CAM 27</div>
+        <iframe loading="lazy"></iframe>
+      </div>
+      <div class="grid-item" data-src="https://vision.chip7.cc/#/cembed/882bff685011dccccde7ab3d174b39cb05423e2d22b924657dbe7f50f7c4933c2fd3b790de512867d98a9c5f6433">
+        <div class="overlay">CAM 28</div>
+        <iframe loading="lazy"></iframe>
+      </div>
+      <div class="grid-item" data-src="https://vision.chip7.cc/#/cembed/33af9e910cbdee921218d3400050786118b29cb3e5c2374b90c9ae10c78c608bebb0da27cf79d5d94d5776340742">
+        <div class="overlay">CAM 29</div>
+        <iframe loading="lazy"></iframe>
+      </div>
+      <!-- Placeholders para CAM 30, 31, 32 -->
+      <div class="grid-item" data-src="">
+        <div class="overlay">CAM 30</div>
+        <div style="color:#fff; display:flex; align-items:center; justify-content:center; width:100%; height:100%;">Sem Feed</div>
+      </div>
+      <div class="grid-item" data-src="">
+        <div class="overlay">CAM 31</div>
+        <div style="color:#fff; display:flex; align-items:center; justify-content:center; width:100%; height:100%;">Sem Feed</div>
+      </div>
+      <div class="grid-item" data-src="">
+        <div class="overlay">CAM 32</div>
+        <div style="color:#fff; display:flex; align-items:center; justify-content:center; width:100%; height:100%;">Sem Feed</div>
+      </div>
+    </div>
+    <!-- Modal com Navegação -->
+    <div class="modal" id="modal">
+      <div class="modal-content">
+        <button class="close-btn" id="closeBtn">X</button>
+        <button class="arrow left" id="prevBtn">&#10094;</button>
+        <button class="arrow right" id="nextBtn">&#10095;</button>
+        <div id="modalIframeContainer" style="width:100%; height:100%;"></div>
+      </div>
+    </div>
+  </div>
+  <script>
+    /**********************/
+    /*   Controle de Login  */
+    /**********************/
+    const loginBtn = document.getElementById('loginBtn');
+    const passwordInput = document.getElementById('passwordInput');
+    const loginError = document.getElementById('loginError');
+    const loginScreen = document.getElementById('loginScreen');
+    const cameraMosaic = document.getElementById('cameraMosaic');
+    loginBtn.addEventListener('click', () => {
+      const pwd = passwordInput.value.trim();
+      if(pwd === 'admin'){
+        loginScreen.style.display = 'none';
+        cameraMosaic.style.display = 'block';
+        loadIframesStaggered();
+      } else {
+        loginError.style.display = 'block';
+      }
+    });
+    /**********************/
+    /* Carregamento Staggered */
+    /**********************/
+    function loadIframesStaggered() {
+      const gridIframes = document.querySelectorAll('.grid-item iframe');
+      gridIframes.forEach((iframe, index) => {
+        setTimeout(() => {
+          const parent = iframe.parentElement;
+          const src = parent.getAttribute('data-src');
+          if(src && !iframe.src) {
+            iframe.src = src;
+          }
+        }, index * 1000); // 1 segundo de delay entre cada iframe
+      });
+    }
+    /**********************/
+    /* Modal e Navegação  */
+    /**********************/
+    const gridItems = document.querySelectorAll('.grid-item');
+    const modal = document.getElementById('modal');
+    const modalIframeContainer = document.getElementById('modalIframeContainer');
+    const closeBtn = document.getElementById('closeBtn');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    let currentIndex = -1;
+    const gridItemsArray = Array.from(gridItems);
+    function updateModalContent(index) {
+      if(index < 0) {
+        index = gridItemsArray.length - 1;
+      }
+      if(index >= gridItemsArray.length) {
+        index = 0;
+      }
+      currentIndex = index;
+      const item = gridItemsArray[currentIndex];
+      const src = item.getAttribute('data-src');
+      modalIframeContainer.innerHTML = '';
+      if(src) {
+        const iframe = document.createElement('iframe');
+        iframe.src = src;
+        iframe.style.width = '100%';
+        iframe.style.height = '100%';
+        iframe.style.border = 'none';
+        modalIframeContainer.appendChild(iframe);
+      } else {
+        const div = document.createElement('div');
+        div.style.cssText = 'width:100%;height:100%;color:#fff;display:flex;align-items:center;justify-content:center;';
+        div.textContent = 'Sem Feed';
+        modalIframeContainer.appendChild(div);
+      }
+    }
+    gridItemsArray.forEach((item, index) => {
+      item.addEventListener('click', () => {
+        const src = item.getAttribute('data-src');
+        if(src) {
+          updateModalContent(index);
+          modal.classList.add('active');
+        }
+      });
+    });
+    closeBtn.addEventListener('click', () => {
+      modal.classList.remove('active');
+      modalIframeContainer.innerHTML = '';
+    });
+    prevBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      updateModalContent(currentIndex - 1);
+    });
+    nextBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      updateModalContent(currentIndex + 1);
+    });
+    modal.addEventListener('click', (e) => {
+      if(e.target === modal) {
+        modal.classList.remove('active');
+        modalIframeContainer.innerHTML = '';
+      }
+    });
+  </script>
+</body>
+</html>

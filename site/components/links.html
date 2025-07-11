@@ -1,0 +1,202 @@
+<div id="app-links-container">
+  <!-- ░░░ RIPAS INDIVIDUAIS NO LADO DIREITO ░░░ -->
+  <div class="manual-stripes">
+    <div class="ripa"></div>
+    <div class="ripa"></div>
+    <div class="ripa"></div>
+    <div class="ripa"></div>
+    <div class="ripa"></div>
+  </div>
+
+  <div class="app-links-content">
+    <!-- ░░░ IMAGEM DO TEXTO "Baixe nossos aplicativos" ░░░ -->
+    <div class="text-side">
+      <img src="assets/textos/links.png" alt="Baixe nossos aplicativos" class="text-image" />
+    </div>
+
+    <!-- ░░░ BOTÃO DE LINK ░░░ -->
+    <div class="button-side">
+      <a href="https://apps.chip7.cc" class="links-button">NOSSOS LINKS</a>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* ░░░ CONTAINER PRINCIPAL ░░░ */
+  #app-links-container {
+    width: 100%;
+    background-color: #333333;
+    padding: 0.1rem 0;
+    min-height: 50px;
+    height: 200px; /* ✅ Altura no desktop */
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* ░░░ RIPAS NO DESKTOP (5 ripas) ░░░ */
+  .manual-stripes {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    width: 55vw; /* ✅ Área das ripas fica do lado direito */
+    display: flex;
+    justify-content: flex-end;
+    gap: 100px; /* ✅ Espaço entre ripas */
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .ripa {
+    width: 100px; /* ✅ Largura de cada ripa no desktop */
+    background-color: #1d1d1b;
+    transform: skewX(-30deg); /* ✅ Inclinação igual ao efeito anterior */
+    height: 100%;
+  }
+
+  /* ░░░ CONTEÚDO: IMAGEM + BOTÃO ░░░ */
+  .app-links-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    z-index: 1;
+    padding: 0 1rem;
+    gap: 1rem;
+  }
+
+  .text-side {
+    flex: 1;
+    display: flex;
+    justify-content: flex-start;
+    padding: 0.4rem;
+  }
+
+  .text-image {
+    width: 360px; /* ✅ Tamanho grande da imagem no desktop */
+    height: auto;
+    margin-left: -20px;
+    max-width: 100%;
+  }
+
+  .button-side {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 0.4rem;
+  }
+
+  .links-button {
+    background-color: #333333;
+    color: white;
+    font-family: 'Segoe UI', sans-serif;
+    font-weight: 900;
+    font-size: 2rem;
+    padding: 1.4rem 3.6rem;
+    border: 10px solid white;
+    border-radius: 999px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    z-index: 1;
+    position: relative;
+    margin-right: -20px;
+    white-space: nowrap;
+  }
+
+  .links-button:hover {
+    transform: scale(1.06);
+    box-shadow: 0 0 14px rgba(255, 255, 255, 0.25);
+  }
+
+  /* ░░░ RESPONSIVO ATÉ 1024px (TABLETS) ░░░ */
+  @media (max-width: 1024px) {
+    .text-image {
+      width: 300px;
+    }
+
+    .links-button {
+      font-size: 1.6rem;
+      padding: 1.2rem 3rem;
+      border-width: 8px;
+    }
+
+    .manual-stripes {
+      width: 60vw;
+      gap: 80px;
+    }
+
+    .ripa {
+      width: 80px;
+    }
+  }
+
+@media (max-width: 768px) {
+  #app-links-container {
+    height: 180px; /* altura total do componente em mobile */
+  }
+
+  .app-links-content {
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1rem;
+    gap: 0.5rem;
+  }
+
+  .text-side {
+    justify-content: center;
+    flex: 0 0 50%;
+  }
+
+  .button-side {
+    justify-content: center;
+    flex: 0 0 50%;
+  }
+
+  .text-image {
+    width: 200px;
+    margin-left: 0;
+  }
+
+  .links-button {
+    font-size: 1.1rem;
+    padding: 1rem 1rem;
+    border-width: 5px;
+    margin-right: 0;
+    white-space: nowrap;
+  }
+
+  /* ░░░ RIPAS PARA MOBILE (3 finas, espaçadas igualmente) ░░░ */
+  .manual-stripes {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+
+    /* 3 ripas de 60px + 2 gaps de 60px = 300px total */
+    width: 200px; /* ⬅️ Ripas mais finas, ocupando menos espaço */
+
+    display: flex;
+    justify-content: flex-end;
+    gap: 40px; /* ⬅️ Espaço entre ripas igual à largura */
+    z-index: 0;
+    overflow: visible;
+  }
+
+  .manual-stripes .ripa:nth-child(n+4) {
+    display: none; /* só 3 ripas */
+  }
+
+  .manual-stripes .ripa {
+    width: 60px; /* ⬅️ Largura da ripa ajustada */
+    height: 100%;
+    background-color: #1d1d1b;
+    transform: skewX(-30deg);
+  }
+}
