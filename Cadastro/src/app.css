@@ -1,0 +1,157 @@
+/* Importando fonte padrão e resetando estilos */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
+}
+
+/* Fundo da tela (área fora do conteúdo) */
+.home-page-container {
+  background-color: #2d2d2d; 
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+}
+
+/* Container principal */
+.home-outer-container {
+  background-color: #ffffff;
+  border-radius: 10px;
+  width: 100%;
+  max-width: 850px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+
+/* Header */
+.home-header-container {
+  width: 100%;
+  background-color: #1d1d1b;
+  border-radius: 0px 0px 30px 30px;
+  padding: 50px;
+  text-align: center;
+  box-shadow: inset 0px -4px 8px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Espaçamento entre Header e Conteúdo */
+.home-header-container + .home-content-container {
+  margin-top: 50px;
+  margin-bottom: 80px;
+}
+
+/* Logo */
+.home-logo {
+  width: 100%;
+  max-width: 400px;
+  height: auto;
+  margin-bottom: 15px;
+}
+
+/* Linha divisória */
+.home-divider {
+  width: 95%;
+  height: 3px;
+  background-color: #f8cb0e;
+  margin: 15px auto;
+}
+
+/* Título */
+.home-title {
+  color: #fff;
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+/* Container do conteúdo */
+.home-content-container {
+  background-color: #fff;
+  border-radius: 25px;
+  padding: 45px;
+  text-align: center;
+  width: 100%;
+  max-width: 700px;
+  box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Subtítulo */
+.home-subtitle {
+  font-size: 20px;
+  color: #444;
+  margin-bottom: 35px;
+  font-weight: 500;
+}
+
+/* Botões */
+.home-button-container {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  align-items: center;
+}
+
+.home-button {
+  text-decoration: none;
+  background-color: #f8cb0e;
+  color: #1d1d1b;
+  padding: 16px 32px;
+  border-radius: 12px;
+  font-size: 18px;
+  font-weight: bold;
+  text-align: center;
+  transition: transform 0.2s ease, box-shadow 0.3s ease-in-out;
+  width: 100%;
+  max-width: 350px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+}
+.home-button:hover {
+  transform: scale(1.07);
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* Responsividade para celular */
+@media (max-width: 768px) {
+  .home-header-container {
+    padding: 40px;
+    border-radius: 0px 0px 25px 25px;
+  }
+
+  .home-header-container + .home-content-container {
+    margin-top: 40px;
+    margin-bottom: 40px;
+  }
+
+  .home-logo {
+    max-width: 280px;
+  }
+
+  .home-content-container {
+    padding: 30px;
+    max-width: 90%;
+  }
+
+  .home-title {
+    font-size: 20px;
+  }
+
+  .home-subtitle {
+    font-size: 18px;
+  }
+
+  .home-button {
+    font-size: 18px;
+    padding: 14px 28px;
+  }
+}
